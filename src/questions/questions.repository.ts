@@ -101,6 +101,7 @@ export class QuestionRepository extends Repository<Question> {
     question.content = content;
     question.status = status;
     question.lastModified = new Date();
+    question.category = await this.createCategory(category);
     try {
       question.save();
       this.logger.verbose(`Question with the id of ${id} successfully updated by user ${uid}`);
