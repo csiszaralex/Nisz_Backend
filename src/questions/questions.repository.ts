@@ -22,7 +22,8 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
-    categories: string[],
+    status: string,
+    category: string,
   ): Promise<Question> {
     const user = await User.findOne(id);
     const question = new Question();
@@ -36,28 +37,36 @@ export class QuestionRepository extends Repository<Question> {
     question.status = status;
     question.title = title;
     question.user = user;
-
-    categories.map(async category => {
-      let foundCategory = await Category.findOne({ where: { name: category } });
-      if (!foundCategory) {
-        foundCategory = new Category();
-        foundCategory.name = category;
-        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        await foundCategory.save();
-      }
-      // question.categorie.push(foundCategory);
-    });
+    question.category = await this.createCategory(category);
 
     try {
       await question.save();
       this.logger.verbose(
         `Question ${question.title} has been successfully created by user ${question.user.name}`,
       );
+      delete question.user;
       return question;
     } catch (error) {
       this.logger.warn(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async createCategory(name: string): Promise<Category> {
+    let category = await Category.findOne({ where: { name } });
+    if (!category) {
+      category = new Category();
+      category.name = name;
+      category.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      try {
+        await category.save();
+        this.logger.verbose(`Category created with name: ${name}`);
+      } catch (error) {
+        this.logger.warn(error);
+        throw new InternalServerErrorException();
+      }
+    }
+    return category;
   }
 
   async getAllQuestions(): Promise<Question[]> {
@@ -83,6 +92,7 @@ export class QuestionRepository extends Repository<Question> {
     title: string,
     content: string,
     status: string,
+    category: string,
   ): Promise<Question> {
     const question = await this.getQuestionById(id);
     if (question.locked) throw new ConflictException();
@@ -198,8 +208,6 @@ export class QuestionRepository extends Repository<Question> {
     if (!question) throw new NotFoundException(`Question with id ${id} not found`);
     if (uid !== answer.user && role < Role.MODERATOR) throw new ForbiddenException();
     if (question.acceptedAnswer) throw new BadRequestException();
-    console.log(question);
-
     question.acceptedAnswer = answer.id;
     try {
       question.save();
