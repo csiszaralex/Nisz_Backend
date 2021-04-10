@@ -20,8 +20,6 @@ export class UserRepository extends Repository<User> {
     user.name = name;
     user.salt = salt;
     user.publicRole = 1;
-    user.companyRole = 1;
-    user.company = null;
     user.password = await bcrypt.hash(password, salt);
 
     try {
