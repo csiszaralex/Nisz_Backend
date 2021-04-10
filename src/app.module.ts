@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { UsersModule } from './users/users.module';
-import { PlacesModule } from './places/places.module';
-import { PermissionsModule } from './permissions/permissions.module';
+import { ForumModule } from './forum/forum.module';
+import { ArticlesModule } from './articles/articles.module';
+import { AnswersModule } from './answers/answers.module';
+import { QuestionsModule } from './questions/questions.module';
+import { CompanysModule } from './companys/companys.module';
 config();
 @Module({
   imports: [
@@ -16,10 +19,14 @@ config();
       database: process.env.DB_DATABASE || 'test',
       entities: [__dirname + '/../**/*.entity.js'],
       synchronize: true,
+      dropSchema: true,
     }),
     UsersModule,
-    PlacesModule,
-    PermissionsModule,
+    CompanysModule,
+    QuestionsModule,
+    AnswersModule,
+    ArticlesModule,
+    ForumModule,
   ],
 })
 export class AppModule {}

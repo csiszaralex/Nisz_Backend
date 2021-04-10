@@ -1,15 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
-import { Move } from '../../moves/entities/move.entity';
-import { Permission } from '../../permissions/entities/permission.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Answer } from 'src/answers/entities/answer.entity';
+import { Article } from 'src/articles/entities/article.entity';
+import { Company } from 'src/companys/entities/company.entity';
+import { Forum } from 'src/forum/entities/forum.entity';
+import { Question } from 'src/questions/entities/question.entity';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -32,16 +27,24 @@ export class User extends BaseEntity {
   @IsNotEmpty()
   salt: string;
 
-  @Column()
-  infectedDate: Date;
+  @Column({ default: 0 })
+  publicRole: number;
 
-  @Column({ nullable: true })
-  morning: boolean;
+  @Column({ default: 0 })
+  companyRole: number;
 
-  @OneToMany(() => Move, move => move.user, { eager: true })
-  moves: Move[];
+  @ManyToOne(() => Company, company => company.user)
+  company: number;
 
-  @ManyToMany(() => Permission, permission => permission.users)
-  @JoinTable()
-  permissions: Permission[];
+  @OneToMany(() => Question, question => question.user)
+  questions: Question[];
+
+  @OneToMany(() => Answer, answer => answer.user)
+  answers: Answer[];
+
+  @OneToMany(() => Article, article => article.user)
+  articles: Article[];
+
+  @OneToMany(() => Forum, forum => forum.user)
+  forums: Forum[];
 }

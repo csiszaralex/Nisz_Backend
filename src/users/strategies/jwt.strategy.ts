@@ -23,7 +23,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException(`No user with email ${email}`);
     }
-    const permissions = user.permissions.map(perm => perm.code);
+    // const permissions = user.permissions.map(perm => perm.code);
+    const permissions = null;
 
     return { permissions, id: user.id, name: user.name };
   }
