@@ -1,34 +1,55 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { ForumService } from './forum.service';
 import { CreateForumDto } from './dto/create-forum.dto';
-import { UpdateForumDto } from './dto/update-forum.dto';
+import { Forum } from './entities/forum.entity';
+import { GetUserid } from 'src/users/decorators/get-userid.decorator';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('forum')
+@ApiTags('Forums')
+@Controller('forums')
 export class ForumController {
   constructor(private readonly forumService: ForumService) {}
 
   @Post()
-  create(@Body() createForumDto: CreateForumDto) {
-    return this.forumService.create(createForumDto);
+  @UseGuards(AuthGuard())
+  createForum(@GetUserid() id: number, @Body() createForumDto: CreateForumDto) {
+    return this.forumService.createForum(id, createForumDto);
   }
 
   @Get()
-  findAll() {
-    return this.forumService.findAll();
+  getAllForums(): Promise<Forum[]> {
+    return this.forumService.getAllForums();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.forumService.findOne(+id);
+  getForumById(@Param('id', ParseIntPipe) id: number): Promise<Forum> {
+    return this.forumService.getForumById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateForumDto: UpdateForumDto) {
-    return this.forumService.update(+id, updateForumDto);
+  @UseGuards(AuthGuard())
+  updateForumById(
+    @GetUserid() uid: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createForumDto: CreateForumDto,
+  ): Promise<Forum> {
+    return this.forumService.updateForumById(uid, id, createForumDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.forumService.remove(+id);
+  @UseGuards(AuthGuard())
+  deleteFormById(@GetUserid() uid: number, @Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.forumService.deleteFormById(uid, id);
   }
 }
