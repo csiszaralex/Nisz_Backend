@@ -11,7 +11,7 @@ export class CreateForumDto {
   content: string;
 
   @IsNotEmpty()
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 'Ajánlott' })
   category: string;
 
   @IsNotEmpty()
