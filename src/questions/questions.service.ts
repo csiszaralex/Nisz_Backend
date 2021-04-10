@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { Question } from './entities/question.entity';
+import { QuestionRepository } from './questions.repository';
 
 @Injectable()
 export class QuestionsService {
-  create(createQuestionDto: CreateQuestionDto) {
-    return 'This action adds a new question';
+  constructor(
+    @InjectRepository(QuestionRepository) private questionRepository: QuestionRepository,
+  ) {}
+  createQuestion(id: number, createQuestionDto: CreateQuestionDto): Promise<Question> {
+    const { title, content, status } = createQuestionDto;
+    return this.questionRepository.createQuestion(id, title, content, status);
   }
 
-  findAll() {
-    return `This action returns all questions`;
+  getAllQuestions(): Promise<Question[]> {
+    return this.questionRepository.getAllQuestions();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
+  getQuestionById(id: number): Promise<Question> {
+    return this.questionRepository.getQuestionById(id);
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+  updateQuestionById(uid: number, id: number, createQuestionDto: CreateQuestionDto) {
+    const { title, content, status } = createQuestionDto;
+    return this.questionRepository.updateQuestionById(uid, id, title, content, status);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  removeQuestionById(uid: number, id: number) {
+    return this.questionRepository.removeQuestionById(uid, id);
   }
 }
