@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
+import { Category } from 'src/categorys/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('article')
 export class Article extends BaseEntity {
@@ -13,9 +14,13 @@ export class Article extends BaseEntity {
 
   @Column()
   @IsNotEmpty()
+  preview: string;
+
+  @Column({ default: '' })
+  @IsNotEmpty()
   content: string;
 
-  @Column()
+  @Column({ default: '' })
   @IsNotEmpty()
   status: string;
 
@@ -33,6 +38,9 @@ export class Article extends BaseEntity {
   @Column({ default: false })
   locked: boolean;
 
-  @ManyToOne(() => User, user => user.articles)
+  @ManyToOne(() => User, user => user.articles, { eager: false })
   user: number;
+
+  @ManyToOne(() => Category, category => category.article, { eager: false })
+  category: Category;
 }

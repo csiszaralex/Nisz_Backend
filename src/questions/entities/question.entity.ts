@@ -1,5 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { Answer } from 'src/answers/entities/answer.entity';
+import { Category } from 'src/categorys/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -16,7 +17,7 @@ export class Question extends BaseEntity {
   @IsNotEmpty()
   content: string;
 
-  @Column()
+  @Column({ default: '' })
   @IsNotEmpty()
   status: string;
 
@@ -37,9 +38,14 @@ export class Question extends BaseEntity {
   @Column({ default: null })
   acceptedAnswer: number;
 
-  @OneToMany(() => Answer, answer => answer.question)
+  @OneToMany(() => Answer, answer => answer.question, { eager: true })
   answers: Answer[];
+
 
   @ManyToOne(() => User, user => user.questions, { eager: true })
   user: User;
+
+  @ManyToOne(() => Category, category => category.question, { eager: false })
+  category: Category;
+
 }

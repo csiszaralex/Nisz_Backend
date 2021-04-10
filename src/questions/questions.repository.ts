@@ -12,6 +12,7 @@ import { Question } from './entities/question.entity';
 import { Role } from 'src/users/enums/Roles.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Answer } from 'src/answers/entities/answer.entity';
+import { Category } from 'src/categorys/entities/category.entity';
 
 @EntityRepository(Question)
 export class QuestionRepository extends Repository<Question> {
@@ -21,7 +22,7 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
-    status: string,
+    categories: string[],
   ): Promise<Question> {
     const user = await User.findOne(id);
     const question = new Question();
@@ -35,6 +36,17 @@ export class QuestionRepository extends Repository<Question> {
     question.status = status;
     question.title = title;
     question.user = user;
+
+    categories.map(async category => {
+      let foundCategory = await Category.findOne({ where: { name: category } });
+      if (!foundCategory) {
+        foundCategory = new Category();
+        foundCategory.name = category;
+        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        await foundCategory.save();
+      }
+      // question.categorie.push(foundCategory);
+    });
 
     try {
       await question.save();

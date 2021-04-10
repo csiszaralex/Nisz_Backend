@@ -12,8 +12,8 @@ export class QuestionsService {
     @InjectRepository(QuestionRepository) private questionRepository: QuestionRepository,
   ) {}
   createQuestion(id: number, createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const { title, content, status } = createQuestionDto;
-    return this.questionRepository.createQuestion(id, title, content, status);
+    const { title, content, categories } = createQuestionDto;
+    return this.questionRepository.createQuestion(id, title, content, categories);
   }
 
   getAllQuestions(): Promise<Question[]> {

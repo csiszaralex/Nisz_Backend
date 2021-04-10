@@ -6,6 +6,7 @@ import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
 import { QuestionsModule } from './questions/questions.module';
 import { CompanysModule } from './companys/companys.module';
+import { CategorysModule } from './categorys/categorys.module';
 config();
 @Module({
   imports: [
@@ -18,12 +19,14 @@ config();
       database: process.env.DB_DATABASE || 'test',
       entities: [__dirname + '/../**/*.entity.js'],
       synchronize: true,
+      dropSchema: true,
     }),
     UsersModule,
     CompanysModule,
     QuestionsModule,
     ArticlesModule,
     ForumModule,
+    CategorysModule,
   ],
 })
 export class AppModule {}
