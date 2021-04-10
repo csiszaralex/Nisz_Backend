@@ -2,15 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 import { Answer } from 'src/answers/entities/answer.entity';
 import { Category } from 'src/categorys/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('question')
 export class Question extends BaseEntity {
@@ -52,6 +44,6 @@ export class Question extends BaseEntity {
   @ManyToOne(() => User, user => user.questions, { eager: false })
   user: number;
 
-  @ManyToMany(() => Category, category => category.questions, { eager: false })
-  categories: Category[];
+  @ManyToOne(() => Category, category => category.question, { eager: false })
+  category: Category;
 }

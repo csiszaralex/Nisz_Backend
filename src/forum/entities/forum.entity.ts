@@ -1,15 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { Category } from 'src/categorys/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('forum')
 export class Forum extends BaseEntity {
@@ -51,6 +43,6 @@ export class Forum extends BaseEntity {
   @OneToMany(() => Forum, forum => forum.parent, { eager: true })
   children: Forum[];
 
-  @ManyToMany(() => Category, category => category.forums, { eager: false })
-  categories: Category[];
+  @ManyToOne(() => Category, category => category.forum, { eager: false })
+  category: Category;
 }

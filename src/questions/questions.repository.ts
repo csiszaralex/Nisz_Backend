@@ -33,7 +33,7 @@ export class QuestionRepository extends Repository<Question> {
         foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
         await foundCategory.save();
       }
-      question.categories.push(foundCategory);
+      // question.categories.push(foundCategory);
     });
 
     try {

@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 import { Article } from 'src/articles/entities/article.entity';
 import { Forum } from 'src/forum/entities/forum.entity';
 import { Question } from 'src/questions/entities/question.entity';
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('category')
 export class Category extends BaseEntity {
@@ -17,15 +17,12 @@ export class Category extends BaseEntity {
   @IsNotEmpty()
   color: string;
 
-  @ManyToMany(() => Forum, forum => forum.categories, { eager: false })
-  @JoinTable()
-  forums: Forum[];
+  @OneToMany(() => Question, question => question.category, { eager: true })
+  question: Question;
 
-  @ManyToMany(() => Article, article => article.categories, { eager: false })
-  @JoinTable()
-  articles: Article[];
+  @OneToMany(() => Article, article => article.category, { eager: true })
+  article: Article;
 
-  @ManyToMany(() => Question, question => question.categories, { eager: false })
-  @JoinTable()
-  questions: Question[];
+  @OneToMany(() => Forum, forum => forum.category, { eager: true })
+  forum: Forum;
 }

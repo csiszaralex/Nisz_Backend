@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { Category } from 'src/categorys/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
-import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('article')
 export class Article extends BaseEntity {
@@ -37,6 +37,6 @@ export class Article extends BaseEntity {
   @ManyToOne(() => User, user => user.articles, { eager: false })
   user: number;
 
-  @ManyToMany(() => Category, category => category.articles, { eager: false })
-  categories: Category[];
+  @ManyToOne(() => Category, category => category.article, { eager: false })
+  category: Category;
 }
