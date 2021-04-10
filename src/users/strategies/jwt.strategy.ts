@@ -15,17 +15,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(
-    payload: JwtPayloadInterface,
-  ): Promise<{ permissions: string[]; id: number; name: string }> {
+  async validate(payload: JwtPayloadInterface): Promise<JwtPayloadInterface> {
     const { email } = payload;
-    const user = await User.findOne({ email }, { relations: ['permissions'] });
+    const user = await User.findOne({ email });
     if (!user) {
       throw new UnauthorizedException(`No user with email ${email}`);
     }
-    // const permissions = user.permissions.map(perm => perm.code);
-    const permissions = null;
 
-    return { permissions, id: user.id, name: user.name };
+    return {
+      email: user.email,
+      id: user.id,
+      companyRole: user.companyRole,
+      publicRole: user.publicRole,
+      company: user.company,
+      name: user.name,
+    };
   }
 }

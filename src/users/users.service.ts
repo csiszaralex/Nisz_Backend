@@ -13,42 +13,26 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  // listInfected(): Promise<InfectedUserDto[]> {
-  //   return this.userRepository.listInfected();
-  // }
+  async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
+    const { name, email, password } = createUserDto;
+    await this.userRepository.createUser(name, email, password);
+    return await this.signinUser({ email, password });
+  }
 
-  // async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
-  //   const { name, email, password } = createUserDto;
-  //   await this.userRepository.createUser(name, email, password);
-  //   return await this.signinUser({ email, password });
-  // }
+  async signinUser(signinUserDto: SigninUserDto): Promise<{ accessToken: string }> {
+    const { email, password } = signinUserDto;
+    const user = await this.userRepository.signinUser(email, password);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
-  // async signinUser(signinUserDto: SigninUserDto): Promise<{ accessToken: string }> {
-  //   const { email, password } = signinUserDto;
-  //   const user = await this.userRepository.signinUser(email, password);
-  //   if (!user) {
-  //     throw new UnauthorizedException('Invalid credentials');
-  //   }
-
-  //   const permissionCodes = user.permissions.map(permission => permission.code);
-  //   const payload: JwtPayloadInterface = {
-  //     email: user.email,
-  //     permissions: permissionCodes,
-  //     id: user.id,
-  //   };
-  //   const accessToken = await this.jwtService.sign(payload);
-  //   return { accessToken };
-  // }
-
-  // iHaveCovid(id: number): Promise<string> {
-  //   return this.userRepository.iHaveCovid(id, new Date());
-  // }
-
-  // addPermission(code: string, id: number) {
-  //   return this.userRepository.addPermission(code.toUpperCase(), id);
-  // }
-
-  // removePermission(code: string, id: number) {
-  //   return this.userRepository.removePermission(code.toUpperCase(), id);
-  // }
+    const payload: JwtPayloadInterface = {
+      email: user.email,
+      id: user.id,
+      companyRole: user.companyRole,
+      publicRole: user.publicRole,
+      company: user.company,
+      name: user.name,
+    };
+    const accessToken = await this.jwtService.sign(payload);
+    return { accessToken };
+  }
 }
