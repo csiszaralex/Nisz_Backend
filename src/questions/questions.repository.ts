@@ -68,7 +68,7 @@ export class QuestionRepository extends Repository<Question> {
     return question;
   }
 
-  async removeQuestionById(uid: number, id: number) {
+  async removeQuestionById(uid: number, id: number): Promise<Question> {
     const question = await Question.findOne({ where: { id: id } });
     question.deleted = true;
     question.lastModified = new Date();

@@ -22,12 +22,16 @@ export class QuestionsService {
     return this.questionRepository.getQuestionById(id);
   }
 
-  updateQuestionById(uid: number, id: number, createQuestionDto: CreateQuestionDto) {
+  updateQuestionById(
+    uid: number,
+    id: number,
+    createQuestionDto: CreateQuestionDto,
+  ): Promise<Question> {
     const { title, content, status } = createQuestionDto;
     return this.questionRepository.updateQuestionById(uid, id, title, content, status);
   }
 
-  removeQuestionById(uid: number, id: number) {
+  removeQuestionById(uid: number, id: number): Promise<Question> {
     return this.questionRepository.removeQuestionById(uid, id);
   }
 }
