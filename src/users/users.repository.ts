@@ -43,7 +43,9 @@ export class UserRepository extends Repository<User> {
   }
 
   async validateUser(email, password): Promise<User> {
+    console.log('Before find');
     const user = await User.findOne({ email });
+    console.log('After find');
     if (!user) throw new NotFoundException(`User with ${email} not found`);
 
     const passwd = await bcrypt.hash(password, user.salt);

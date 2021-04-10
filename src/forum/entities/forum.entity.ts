@@ -40,7 +40,7 @@ export class Forum extends BaseEntity {
   @ManyToOne(() => Forum, forum => forum.children, { eager: false })
   parent: number;
 
-  @OneToMany(() => Forum, forum => forum.parent, { eager: true })
+  @OneToMany(() => Forum, forum => forum.parent, { eager: false })
   children: Forum[];
 
   @ManyToOne(() => Category, category => category.forum, { eager: false })
