@@ -4,7 +4,6 @@ import { config } from 'dotenv';
 import { UsersModule } from './users/users.module';
 import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
-import { AnswersModule } from './answers/answers.module';
 import { QuestionsModule } from './questions/questions.module';
 import { CompanysModule } from './companys/companys.module';
 config();
@@ -23,7 +22,6 @@ config();
     UsersModule,
     CompanysModule,
     QuestionsModule,
-    AnswersModule,
     ArticlesModule,
     ForumModule,
   ],

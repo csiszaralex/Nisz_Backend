@@ -36,7 +36,7 @@ export class User extends BaseEntity {
   @ManyToOne(() => Company, company => company.user)
   company: number;
 
-  @OneToMany(() => Question, question => question.user)
+  @OneToMany(() => Question, question => question.user, { eager: false })
   questions: Question[];
 
   @OneToMany(() => Answer, answer => answer.user)

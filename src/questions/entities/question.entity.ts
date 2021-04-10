@@ -40,6 +40,6 @@ export class Question extends BaseEntity {
   @OneToMany(() => Answer, answer => answer.question)
   answers: Answer[];
 
-  @ManyToOne(() => User, user => user.questions)
-  user: number;
+  @ManyToOne(() => User, user => user.questions, { eager: true })
+  user: User;
 }
