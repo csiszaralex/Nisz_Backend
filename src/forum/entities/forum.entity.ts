@@ -9,7 +9,6 @@ export class Forum extends BaseEntity {
   id: number;
 
   @Column()
-  @IsNotEmpty()
   title: string;
 
   @Column()

@@ -12,7 +12,7 @@ export class CreateForumDto {
 
   @IsNotEmpty()
   @ApiProperty({ example: 1 })
-  category: number;
+  category: string;
 
   @IsNotEmpty()
   @ApiProperty({ example: 1 })
