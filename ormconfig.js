@@ -10,4 +10,5 @@ module.exports = {
   database: process.env.DB_DATABASE || 'test',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: true,
+  dropSchema: true,
 };

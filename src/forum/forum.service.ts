@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateForumDto } from './dto/create-forum.dto';
-import { UpdateForumDto } from './dto/update-forum.dto';
+import { Forum } from './entities/forum.entity';
+import { ForumRepository } from './forum.repository';
 
 @Injectable()
 export class ForumService {
-  create(createForumDto: CreateForumDto) {
-    return 'This action adds a new forum';
+  constructor(@InjectRepository(ForumRepository) private forumRepository: ForumRepository) {}
+  createForum(id: number, createForumDto: CreateForumDto) {
+    const { title, content, category, parent } = createForumDto;
+    return this.forumRepository.createForum(id, title, content, category, parent);
   }
 
-  findAll() {
-    return `This action returns all forum`;
+  getAllForums(): Promise<Forum[]> {
+    return this.forumRepository.getAllForums();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} forum`;
+  getForumById(id: number): Promise<Forum> {
+    return this.forumRepository.getForumById(id);
   }
 
-  update(id: number, updateForumDto: UpdateForumDto) {
-    return `This action updates a #${id} forum`;
+  updateForumById(uid: number, id: number, createForumDto: CreateForumDto): Promise<Forum> {
+    const { title, content, category, parent } = createForumDto;
+    return this.forumRepository.updateForumById(uid, id, title, content, category, parent);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} forum`;
+  deleteFormById(uid: number, id: number): Promise<string> {
+    return this.forumRepository.deleteFormById(uid, id);
   }
 }

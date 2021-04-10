@@ -20,7 +20,6 @@ config();
       database: process.env.DB_DATABASE || 'test',
       entities: [__dirname + '/../**/*.entity.js'],
       synchronize: true,
-      dropSchema: true,
     }),
     UsersModule,
     CompanysModule,
