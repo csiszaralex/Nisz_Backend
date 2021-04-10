@@ -12,9 +12,9 @@ export class Answer extends BaseEntity {
   @IsNotEmpty()
   content: string;
 
-  @ManyToOne(() => User, user => user.answers)
+  @ManyToOne(() => User, user => user.answers, { eager: false })
   user: number;
 
-  @ManyToOne(() => Question, question => question.answers)
+  @ManyToOne(() => Question, question => question.answers, { eager: false })
   question: number;
 }

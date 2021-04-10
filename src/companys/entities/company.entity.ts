@@ -11,6 +11,6 @@ export class Company extends BaseEntity {
   @IsNotEmpty()
   name: string;
 
-  @OneToMany(() => User, user => user.company)
+  @OneToMany(() => User, user => user.company, { eager: true })
   user: User[];
 }
