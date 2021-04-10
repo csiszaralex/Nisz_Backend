@@ -1,15 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { Answer } from 'src/answers/entities/answer.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Timestamp,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('question')
 export class Question extends BaseEntity {
