@@ -6,7 +6,6 @@ import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
 import { AnswersModule } from './answers/answers.module';
 import { QuestionsModule } from './questions/questions.module';
-import { CompanysModule } from './companys/companys.module';
 import { CategorysModule } from './categorys/categorys.module';
 config();
 @Module({
@@ -22,7 +21,6 @@ config();
       synchronize: true,
     }),
     UsersModule,
-    CompanysModule,
     QuestionsModule,
     AnswersModule,
     ArticlesModule,
