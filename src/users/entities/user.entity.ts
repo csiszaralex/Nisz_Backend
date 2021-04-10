@@ -33,18 +33,18 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   companyRole: number;
 
-  @ManyToOne(() => Company, company => company.user)
+  @ManyToOne(() => Company, company => company.user, { eager: false })
   company: number;
 
-  @OneToMany(() => Question, question => question.user)
+  @OneToMany(() => Question, question => question.user, { eager: true })
   questions: Question[];
 
-  @OneToMany(() => Answer, answer => answer.user)
+  @OneToMany(() => Answer, answer => answer.user, { eager: true })
   answers: Answer[];
 
-  @OneToMany(() => Article, article => article.user)
+  @OneToMany(() => Article, article => article.user, { eager: true })
   articles: Article[];
 
-  @OneToMany(() => Forum, forum => forum.user)
+  @OneToMany(() => Forum, forum => forum.user, { eager: true })
   forums: Forum[];
 }

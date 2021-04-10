@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Question } from './entities/question.entity';
+import { Category } from 'src/categorys/entities/category.entity';
 
 @EntityRepository(Question)
 export class QuestionRepository extends Repository<Question> {
@@ -10,7 +11,7 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
-    status: string,
+    categories: string[],
   ): Promise<Question> {
     const question = new Question();
     question.acceptedAnswer = null;
@@ -23,6 +24,17 @@ export class QuestionRepository extends Repository<Question> {
     question.status = status;
     question.title = title;
     question.user = id;
+
+    categories.map(async category => {
+      let foundCategory = await Category.findOne({ where: { name: category } });
+      if (!foundCategory) {
+        foundCategory = new Category();
+        foundCategory.name = category;
+        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        await foundCategory.save();
+      }
+      // question.categorie.push(foundCategory);
+    });
 
     try {
       await question.save();
