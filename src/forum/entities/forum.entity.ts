@@ -9,7 +9,6 @@ export class Forum extends BaseEntity {
   id: number;
 
   @Column()
-  @IsNotEmpty()
   title: string;
 
   @Column()
@@ -39,7 +38,6 @@ export class Forum extends BaseEntity {
 
   @ManyToOne(() => Forum, forum => forum.children, { eager: false })
   parent: Forum;
-
 
   @OneToMany(() => Forum, forum => forum.parent, { eager: false })
   children: Forum[];

@@ -1,10 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 import { Answer } from 'src/answers/entities/answer.entity';
 import { Article } from 'src/articles/entities/article.entity';
-import { Company } from 'src/companys/entities/company.entity';
 import { Forum } from 'src/forum/entities/forum.entity';
 import { Question } from 'src/questions/entities/question.entity';
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseEntity {
