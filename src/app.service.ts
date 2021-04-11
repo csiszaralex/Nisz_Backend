@@ -19,15 +19,15 @@ export class AppService {
     const datas = [];
     questions.map(question => {
       delete question.answers;
-      if (!filter || filter.split(',').includes(question?.category?.id))
+      if (!filter || filter.split(',').includes('' + question?.category?.id))
         datas.push({ ...question, type: 'question' });
     });
     forums.map(forum => {
-      if (!filter || filter.split(',').includes(forum?.category?.id))
+      if (!filter || filter.split(',').includes('' + forum?.category?.id))
         datas.push({ ...forum, type: 'forum' });
     });
     articles.map(article => {
-      if (!filter || filter.split(',').includes(article?.category?.id))
+      if (!filter || filter.split(',').includes('' + article?.category?.id))
         datas.push({ ...article, type: 'article' });
     });
     datas.sort(data => -data.lastModified);
