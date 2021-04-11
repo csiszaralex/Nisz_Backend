@@ -81,12 +81,4 @@ export class ForumController {
   ): Promise<void> {
     return this.forumService.changeStatus(id, newStatus);
   }
-  
-  @Put(':id/lock')
-  @Roles(Role.MODERATOR)
-  @UseGuards(RolesGuard)
-  @UseGuards(AuthGuard())
-  changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
-    return this.forumService.changeLock(id);
-  }
 }

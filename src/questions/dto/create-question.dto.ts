@@ -17,8 +17,4 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   @ApiProperty({ example: 'Ajánlott' })
   status: string;
-
-  @IsNotEmpty()
-  @ApiProperty({ example: ['Music', 'Popular', 'Internet'] })
-  category: string;
 }

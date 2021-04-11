@@ -36,7 +36,7 @@ export class QuestionRepository extends Repository<Question> {
     question.locked = false;
     question.status = status;
     question.title = title;
-    question.user = id;
+    question.user = user;
     question.category = await Category.findOne({ where: { name: category } });
 
     try {
@@ -107,7 +107,6 @@ export class QuestionRepository extends Repository<Question> {
     content: string,
     category: string,
     status: string,
-    category: string,
   ): Promise<Question> {
     const question = await this.getQuestionById(id);
     if (question.locked) throw new ConflictException();
