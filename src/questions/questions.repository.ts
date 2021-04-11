@@ -44,6 +44,9 @@ export class QuestionRepository extends Repository<Question> {
       this.logger.verbose(
         `Question ${question.title} has been successfully created by user ${question.user.name}`,
       );
+      delete question.category.article;
+      delete question.category.forum;
+      delete question.category.question;
       delete question.user;
       return question;
     } catch (error) {
@@ -70,10 +73,17 @@ export class QuestionRepository extends Repository<Question> {
   }
 
   async getAllQuestions(): Promise<Question[]> {
-    const questions = await Question.find({ where: { locked: false }, relations: ['answers'] });
+    const questions = await Question.find({
+      where: { deleted: false },
+      relations: ['answers', 'category'],
+    });
+    if (!questions) return [];
     questions.map(question => {
       delete question.user;
-      return questions;
+      delete question.category.article;
+      delete question.category.forum;
+      delete question.category.question;
+      return question;
     });
     return questions;
   }
@@ -82,6 +92,10 @@ export class QuestionRepository extends Repository<Question> {
     const question = await Question.findOne(id, { relations: ['user', 'answers'] });
     if (!question) throw new NotFoundException(`Question with id ${id} noth found`);
     if (question.deleted) throw new GoneException();
+    delete question.category.article;
+    delete question.category.forum;
+    delete question.category.question;
+    delete question.user;
     return question;
   }
 
@@ -110,6 +124,9 @@ export class QuestionRepository extends Repository<Question> {
       throw new InternalServerErrorException();
     }
     delete question.user;
+    delete question.category.article;
+    delete question.category.forum;
+    delete question.category.question;
     return question;
   }
 

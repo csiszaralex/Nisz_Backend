@@ -39,7 +39,7 @@ export class Article extends BaseEntity {
   locked: boolean;
 
   @ManyToOne(() => User, user => user.articles, { eager: false })
-  user: number;
+  user: User;
 
   @ManyToOne(() => Category, category => category.article, { eager: false })
   category: Category;

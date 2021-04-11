@@ -6,7 +6,6 @@ import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
 import { QuestionsModule } from './questions/questions.module';
 import { CompanysModule } from './companys/companys.module';
-import { CategorysModule } from './categorys/categorys.module';
 config();
 @Module({
   imports: [
@@ -25,7 +24,6 @@ config();
     QuestionsModule,
     ArticlesModule,
     ForumModule,
-    CategorysModule,
   ],
 })
 export class AppModule {}
