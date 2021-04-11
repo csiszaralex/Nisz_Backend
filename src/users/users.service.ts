@@ -36,6 +36,6 @@ export class UsersService {
   }
 
   setRole(role: Role, id: number, uid: number, uRole: Role) {
-    return '';
+    return this.userRepository.setRole(role, id, uid, uRole);
   }
 }

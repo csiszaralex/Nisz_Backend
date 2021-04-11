@@ -3,11 +3,13 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import {
   ConflictException,
+  ForbiddenException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Role } from './enums/Roles.enum';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -47,5 +49,19 @@ export class UserRepository extends Repository<User> {
     const passwd = await bcrypt.hash(password, user.salt);
     if (!(passwd === user.password)) throw new UnauthorizedException('Wrong password');
     return user;
+  }
+
+  async setRole(role: Role, id: number, uid: number, uRole: Role) {
+    const user = await User.findOne(id);
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+    if (role < uRole) throw new ForbiddenException();
+    user.publicRole = role;
+    try {
+      user.save();
+      this.logger.verbose(`User ${uid} chenged ${id}-s role to ${role}`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
+    }
   }
 }

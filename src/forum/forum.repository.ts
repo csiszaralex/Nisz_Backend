@@ -53,7 +53,6 @@ export class ForumRepository extends Repository<Forum> {
       );
       delete forum.deleted;
       delete forum.parent;
-      delete forum.user;
       delete forum?.category?.question;
       delete forum?.category?.article;
       delete forum?.category?.forum;

@@ -31,6 +31,6 @@ export class UsersController {
     @GetUserid() uid: number,
     @GetRole() uRole: Role,
   ) {
-    this.usersService.setRole(role, id, uid, uRole);
+    return this.usersService.setRole(role, id, uid, uRole);
   }
 }
