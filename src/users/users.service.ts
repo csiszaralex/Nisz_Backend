@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
+import { Role } from './enums/Roles.enum';
 import { JwtPayloadInterface } from './interfaces/jwt-payload.interface';
 import { UserRepository } from './users.repository';
 
@@ -32,5 +33,9 @@ export class UsersService {
     };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
+  }
+
+  setRole(role: Role, id: number, uid: number, uRole: Role) {
+    return '';
   }
 }

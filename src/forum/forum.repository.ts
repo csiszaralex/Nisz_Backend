@@ -98,7 +98,6 @@ export class ForumRepository extends Repository<Forum> {
       forums.map(forum => {
         delete forum.deleted;
         delete forum.parent;
-        delete forum.user;
         delete forum?.category?.question;
         delete forum?.category?.article;
         delete forum?.category?.forum;
@@ -122,7 +121,6 @@ export class ForumRepository extends Repository<Forum> {
       if (forum.deleted) throw new GoneException('The requested forum post is deleted');
       delete forum.deleted;
       delete forum.parent;
-      delete forum.user;
       delete forum?.category?.question;
       delete forum?.category?.article;
       delete forum?.category?.forum;
