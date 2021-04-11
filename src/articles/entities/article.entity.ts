@@ -38,6 +38,9 @@ export class Article extends BaseEntity {
   @Column({ default: false })
   locked: boolean;
 
+  @Column({ default: 0 })
+  timesOpened: number;
+
   @ManyToOne(() => User, user => user.articles, { eager: false })
   user: User;
 

@@ -10,6 +10,8 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Put,
+  Query,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
@@ -34,8 +36,8 @@ export class ArticlesController {
   }
 
   @Get()
-  getAllArticles(): Promise<Article[]> {
-    return this.articlesService.getAllArticles();
+  getAllArticles(@Query('discover') discover: boolean): Promise<Article[]> {
+    return this.articlesService.getAllArticles(discover);
   }
 
   @Get(':id')

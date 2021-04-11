@@ -7,6 +7,10 @@ export class CreateArticleDto {
   title: string;
 
   @IsNotEmpty()
+  @ApiProperty({ example: 'Rövid összefoglaló' })
+  preview: string;
+
+  @IsNotEmpty()
   @ApiProperty({ example: 'Who likes Gorillaz?' })
   content: string;
 
@@ -15,6 +19,6 @@ export class CreateArticleDto {
   status: string;
 
   @IsNotEmpty()
-  @ApiProperty({ example: ['Music', 'Popular', 'Internet'] })
+  @ApiProperty({ example: 'GitHub' })
   category: string;
 }

@@ -19,16 +19,19 @@ export class ArticleRepository extends Repository<Article> {
     content: string,
     status: string,
     category: string,
+    preview: string,
     id: number,
   ) {
     const article = new Article();
     article.title = title;
     article.content = content;
     article.status = status;
+    article.preview = preview;
     article.category = await this.createCategory(category);
     article.created = new Date();
     article.lastModified = new Date();
     article.user = await User.findOne(id);
+    article.timesOpened = 0;
 
     try {
       await article.save();
@@ -57,8 +60,19 @@ export class ArticleRepository extends Repository<Article> {
     return category;
   }
 
-  async getAllArticles(): Promise<Article[]> {
-    const articles = await Article.find({ where: { deleted: false }, relations: ['category'] });
+  async getAllArticles(discover: boolean): Promise<Article[]> {
+    let articles: Article[];
+    if (discover)
+      articles = await Article.find({
+        where: { deleted: false, status: 'Verified' },
+        relations: ['category'],
+        order: { timesOpened: 'DESC' },
+      });
+    else
+      articles = await Article.find({
+        where: { deleted: false },
+        relations: ['category'],
+      });
     articles.map(article => {
       delete article.category.forum;
       delete article.category.article;
@@ -73,6 +87,14 @@ export class ArticleRepository extends Repository<Article> {
       where: { deleted: false, id: id },
       relations: ['category'],
     });
+    article.timesOpened = article.timesOpened + 1;
+    try {
+      await article.save();
+      this.logger.verbose(`Article ${article.id} was clicked on, and got a point`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
+    }
     delete article.category.forum;
     delete article.category.article;
     delete article.category.question;
@@ -87,6 +109,7 @@ export class ArticleRepository extends Repository<Article> {
     content: string,
     status: string,
     category: string,
+    preview: string,
   ): Promise<Article> {
     const article = await Article.findOne({ where: { id: id }, relations: ['user'] });
     if (article.locked) throw new ConflictException();
@@ -94,6 +117,7 @@ export class ArticleRepository extends Repository<Article> {
     article.title = title;
     article.content = content;
     article.status = status;
+    article.preview = preview;
     article.lastModified = new Date();
     article.category = await this.createCategory(category);
     try {

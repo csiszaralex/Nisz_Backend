@@ -10,12 +10,12 @@ export class ArticlesService {
   constructor(@InjectRepository(ArticleRepository) private articleRepository: ArticleRepository) {}
 
   createArticle(createArticleDto: CreateArticleDto, id: number) {
-    const { title, content, status, category } = createArticleDto;
-    return this.articleRepository.createArticle(title, content, status, category, id);
+    const { title, content, status, category, preview } = createArticleDto;
+    return this.articleRepository.createArticle(title, content, status, category, preview, id);
   }
 
-  getAllArticles(): Promise<Article[]> {
-    return this.articleRepository.getAllArticles();
+  getAllArticles(discover: boolean): Promise<Article[]> {
+    return this.articleRepository.getAllArticles(discover);
   }
 
   getArticleById(id: number) {
@@ -28,7 +28,7 @@ export class ArticlesService {
     id: number,
     createArticleDto: CreateArticleDto,
   ): Promise<Article> {
-    const { title, content, status, category } = createArticleDto;
+    const { title, content, status, category, preview } = createArticleDto;
     return this.articleRepository.updateArticleById(
       role,
       uid,
@@ -37,6 +37,7 @@ export class ArticlesService {
       content,
       status,
       category,
+      preview,
     );
   }
 
