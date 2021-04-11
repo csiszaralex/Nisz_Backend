@@ -34,7 +34,7 @@ export class Forum extends BaseEntity {
   locked: boolean;
 
   @ManyToOne(() => User, user => user.forums, { eager: false })
-  user: number;
+  user: User;
 
   @ManyToOne(() => Forum, forum => forum.children, { eager: false })
   parent: Forum;

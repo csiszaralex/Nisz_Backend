@@ -1,6 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import {
   BadRequestException,
+  ConflictException,
+  ForbiddenException,
   GoneException,
   InternalServerErrorException,
   Logger,
@@ -8,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { Forum } from './entities/forum.entity';
 import { Category } from 'src/categorys/entities/category.entity';
+import { Role } from 'src/users/enums/Roles.enum';
+import { User } from 'src/users/entities/user.entity';
 
 @EntityRepository(Forum)
 export class ForumRepository extends Repository<Forum> {
@@ -33,7 +37,7 @@ export class ForumRepository extends Repository<Forum> {
     forum.locked = false;
     forum.parent = parentObj ? parentObj : null;
     forum.status = '';
-    forum.user = id;
+    forum.user = await User.findOne(id);
     forum.content = content;
     forum.category = categoryObj;
     forum.children = [];
@@ -93,7 +97,10 @@ export class ForumRepository extends Repository<Forum> {
   }
 
   async getForumById(id: number): Promise<Forum> {
-    const forum = await Forum.findOne(id, { relations: ['category', 'children'] });
+    const forum = await Forum.findOne({
+      where: { id: id, deleted: false },
+      relations: ['category', 'children'],
+    });
     if (forum) {
       if (forum.deleted) throw new GoneException('The requested forum post is deleted');
       delete forum.deleted;
@@ -106,6 +113,7 @@ export class ForumRepository extends Repository<Forum> {
   }
 
   async updateForumById(
+    role: Role,
     uid: number,
     id: number,
     title: string,
@@ -115,8 +123,10 @@ export class ForumRepository extends Repository<Forum> {
   ): Promise<Forum> {
     let parentObj = null;
     if (!(parent == 0) && parent != null) parentObj = await this.getForumById(parent);
-    const forum = await this.getForumById(id);
+    const forum = await Forum.findOne(id, { relations: ['user'] });
     if (!forum) throw new NotFoundException(`No forum post with the id of ${id} found`);
+    if (forum.locked) throw new ConflictException();
+    if (!(forum.user.id === uid) && !(role >= Role.MODERATOR)) throw new ForbiddenException();
 
     forum.title = title;
     forum.deleted = false;
@@ -124,7 +134,6 @@ export class ForumRepository extends Repository<Forum> {
     forum.locked = false;
     forum.parent = parentObj;
     forum.status = '';
-    forum.user = uid;
     forum.content = content;
     forum.category = await this.createCategory(category);
 
@@ -135,6 +144,7 @@ export class ForumRepository extends Repository<Forum> {
       );
       delete forum.deleted;
       delete forum.parent;
+      delete forum.user;
       delete forum.category.question;
       delete forum.category.article;
       delete forum.category.forum;
@@ -144,7 +154,7 @@ export class ForumRepository extends Repository<Forum> {
     }
   }
 
-  async deleteFormById(uid: number, id: number): Promise<string> {
+  async deleteFormById(uid: number, role: Role, id: number): Promise<string> {
     const forum = await Forum.findOne({ where: { id: id } });
     forum.deleted = true;
     forum.lastModified = new Date();
@@ -156,6 +166,35 @@ export class ForumRepository extends Repository<Forum> {
       throw new InternalServerErrorException();
     }
     return '';
+  }
+  async removeQuestionById(uid: number, role: Role, id: number): Promise<string> {
+    const forum = await this.getForumById(id);
+    if (forum.locked) throw new ConflictException();
+    if (forum.user.id === uid) {
+      forum.remove();
+      try {
+        forum.save();
+        this.logger.verbose(
+          `Forum with the id of ${id} successfully deleted from database by user ${uid}`,
+        );
+        return '';
+      } catch (error) {
+        this.logger.warn(error);
+        throw new InternalServerErrorException();
+      }
+    } else if (role >= Role.MODERATOR) {
+      forum.deleted = true;
+      forum.lastModified = new Date();
+
+      try {
+        forum.save();
+        this.logger.verbose(`Forum with the id of ${id} successfully 'deleted' by user ${uid}`);
+        return '';
+      } catch (error) {
+        this.logger.warn(error);
+        throw new InternalServerErrorException();
+      }
+    } else throw new ForbiddenException();
   }
 
   async changeLock(id: number): Promise<string> {
