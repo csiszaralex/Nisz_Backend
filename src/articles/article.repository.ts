@@ -199,4 +199,16 @@ export class ArticleRepository extends Repository<Article> {
     }
     return '';
   }
+  async changeStatus(id: number, newStatus: string) {
+    console.log(newStatus);
+    const article = await this.getArticleById(id);
+    article.status = newStatus;
+    try {
+      article.save();
+      this.logger.verbose(`Status for id ${article.id} article changed to ${newStatus}`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
+    }
+  }
 }

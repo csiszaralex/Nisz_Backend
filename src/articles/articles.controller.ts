@@ -72,4 +72,14 @@ export class ArticlesController {
   changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return this.articlesService.changeLock(id);
   }
+  @Patch(':id/status')
+  @Roles(Role.EDITOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeStatus(
+    @Body('status') newStatus: string,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.articlesService.changeStatus(id, newStatus);
+  }
 }

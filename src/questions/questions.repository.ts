@@ -265,7 +265,7 @@ export class QuestionRepository extends Repository<Question> {
     question.status = newStatus;
     try {
       question.save();
-      this.logger.verbose(`Status for id ${question.id} forum post changed to ${newStatus}`);
+      this.logger.verbose(`Status for id ${question.id} question changed to ${newStatus}`);
     } catch (error) {
       this.logger.warn(error);
       throw new InternalServerErrorException();

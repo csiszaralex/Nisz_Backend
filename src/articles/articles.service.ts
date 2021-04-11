@@ -48,4 +48,7 @@ export class ArticlesService {
   changeLock(id: number): Promise<string> {
     return this.articleRepository.changeLock(id);
   }
+  changeStatus(id: number, newStatus: string) {
+    return this.articleRepository.changeStatus(id, newStatus);
+  }
 }

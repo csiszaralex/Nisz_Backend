@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleRepository } from './articles/article.repository';
-import { Article } from './articles/entities/article.entity';
-import { Forum } from './forum/entities/forum.entity';
 import { ForumRepository } from './forum/forum.repository';
-import { Question } from './questions/entities/question.entity';
 import { QuestionRepository } from './questions/questions.repository';
 
 @Injectable()
