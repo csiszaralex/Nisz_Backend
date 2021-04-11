@@ -80,9 +80,9 @@ export class QuestionRepository extends Repository<Question> {
     if (!questions) return [];
     questions.map(question => {
       delete question.user;
-      delete question.category.article;
-      delete question.category.forum;
-      delete question.category.question;
+      delete question?.category?.article;
+      delete question?.category?.forum;
+      delete question?.category?.question;
       return question;
     });
     return questions;
@@ -92,10 +92,10 @@ export class QuestionRepository extends Repository<Question> {
     const question = await Question.findOne(id, { relations: ['user', 'answers'] });
     if (!question) throw new NotFoundException(`Question with id ${id} noth found`);
     if (question.deleted) throw new GoneException();
-    delete question.category.article;
-    delete question.category.forum;
-    delete question.category.question;
-    delete question.user;
+    delete question?.category?.article;
+    delete question?.category?.forum;
+    delete question?.category?.question;
+    delete question?.user;
     return question;
   }
 
