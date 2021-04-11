@@ -93,7 +93,7 @@ export class QuestionRepository extends Repository<Question> {
   }
 
   async getQuestionById(id: number): Promise<any> {
-    const question = await Question.findOne(id, { relations: ['user', 'answers'] });
+    const question = await Question.findOne(id, { relations: ['user', 'answers', 'category'] });
     if (!question) throw new NotFoundException(`Question with id ${id} noth found`);
     if (question.deleted) throw new GoneException();
     let acceptedAnswer = null;

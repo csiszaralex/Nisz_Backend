@@ -15,22 +15,39 @@ export class AppService {
     @InjectRepository(ForumRepository) private forumRepository: ForumRepository,
   ) {}
 
-  async getNews() {
+  async getNews(filter) {
     const questions = await this.questionRepository.getAllQuestions();
     const forums = await this.forumRepository.getAllForums();
     const articles = await this.articleRepository.getAllArticles();
     const datas = [];
     questions.map(question => {
       delete question.answers;
-      datas.push({ ...question, type: 'question' });
+      if (!filter || filter.split(',').includes(question.category.name))
+        datas.push({ ...question, type: 'question' });
     });
     forums.map(forum => {
-      datas.push({ ...forum, type: 'forum' });
+      if (!filter || filter.split(',').includes(forum.category.name))
+        datas.push({ ...forum, type: 'forum' });
     });
     articles.map(article => {
-      datas.push({ ...article, type: 'article' });
+      if (!filter || filter.split(',').includes(article.category.name))
+        datas.push({ ...article, type: 'article' });
     });
     datas.sort(data => -data.lastModified);
+    return datas;
+  }
+
+  async getPopulars() {
+    const questions = await this.questionRepository.getAllQuestions();
+    const forums = await this.forumRepository.getAllForums();
+    const datas = [];
+    questions.map(question => {
+      datas.push({ ...question, type: 'question', count: question?.answers?.length });
+    });
+    forums.map(forum => {
+      datas.push({ ...forum, type: 'forum', count: forum?.children?.length });
+    });
+    datas.sort((dataA, dataB) => dataB.count - dataA.count);
     return datas;
   }
 }
