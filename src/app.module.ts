@@ -4,7 +4,6 @@ import { config } from 'dotenv';
 import { UsersModule } from './users/users.module';
 import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
-import { AnswersModule } from './answers/answers.module';
 import { QuestionsModule } from './questions/questions.module';
 import { CategorysModule } from './categorys/categorys.module';
 config();
@@ -19,10 +18,10 @@ config();
       database: process.env.DB_DATABASE || 'test',
       entities: [__dirname + '/../**/*.entity.js'],
       synchronize: true,
+      dropSchema: true,
     }),
     UsersModule,
     QuestionsModule,
-    AnswersModule,
     ArticlesModule,
     ForumModule,
     CategorysModule,
