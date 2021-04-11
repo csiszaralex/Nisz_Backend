@@ -139,4 +139,17 @@ export class ArticleRepository extends Repository<Article> {
       }
     } else throw new ForbiddenException();
   }
+
+  async changeLock(id: number): Promise<string> {
+    const article = await Article.findOne({ where: { id: id, deleted: false } });
+    article.locked = !article.locked;
+    article.lastModified = new Date();
+    try {
+      article.save();
+      this.logger.verbose(`Question ${id} locked state set to ${article.locked}`);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+    return '';
+  }
 }

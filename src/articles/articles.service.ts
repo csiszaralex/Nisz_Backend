@@ -43,4 +43,8 @@ export class ArticlesService {
   deleteArticleById(role: Role, uid: number, id: number) {
     return this.articleRepository.deleteArticleById(role, uid, id);
   }
+
+  changeLock(id: number): Promise<string> {
+    return this.articleRepository.changeLock(id);
+  }
 }

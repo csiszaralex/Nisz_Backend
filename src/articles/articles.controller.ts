@@ -9,12 +9,15 @@ import {
   UseGuards,
   ValidationPipe,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GetRole } from 'src/users/decorators/get-role.decorator';
 import { GetUserid } from 'src/users/decorators/get-userid.decorator';
+import { Roles } from 'src/users/decorators/roles.decorator';
 import { Role } from 'src/users/enums/Roles.enum';
+import { RolesGuard } from 'src/users/guards/roles.guard';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { Article } from './entities/article.entity';
@@ -59,5 +62,13 @@ export class ArticlesController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.articlesService.deleteArticleById(role, uid, id);
+  }
+
+  @Put(':id/lock')
+  @Roles(Role.MODERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.articlesService.changeLock(id);
   }
 }
