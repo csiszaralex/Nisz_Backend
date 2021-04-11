@@ -11,7 +11,6 @@ import {
   ParseIntPipe,
   Put,
   Query,
-  ParseBoolPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
