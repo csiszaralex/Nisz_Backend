@@ -71,12 +71,20 @@ export class ArticleRepository extends Repository<Article> {
     else
       articles = await Article.find({
         where: { deleted: false },
-        relations: ['category'],
+        relations: ['category', 'user'],
       });
     articles.map(article => {
       delete article?.category?.forum;
       delete article?.category?.article;
       delete article?.category?.question;
+      delete article?.user?.password;
+      delete article?.user?.publicRole;
+      delete article?.user?.questions;
+      delete article?.user?.answers;
+      delete article?.user?.articles;
+      delete article?.user?.salt;
+      delete article?.user?.forums;
+      delete article?.user?.email;
       return article;
     });
     return articles;
@@ -85,7 +93,7 @@ export class ArticleRepository extends Repository<Article> {
   async getArticleById(id: number): Promise<Article> {
     const article = await Article.findOne({
       where: { deleted: false, id: id },
-      relations: ['category'],
+      relations: ['category', 'user'],
     });
     article.timesOpened = article.timesOpened + 1;
     try {
@@ -95,9 +103,17 @@ export class ArticleRepository extends Repository<Article> {
       this.logger.warn(error);
       throw new InternalServerErrorException();
     }
-    delete article.category.forum;
-    delete article.category.article;
-    delete article.category.question;
+    delete article?.category?.forum;
+    delete article?.category?.article;
+    delete article?.category?.question;
+    delete article?.user?.password;
+    delete article?.user?.publicRole;
+    delete article?.user?.questions;
+    delete article?.user?.answers;
+    delete article?.user?.articles;
+    delete article?.user?.salt;
+    delete article?.user?.forums;
+    delete article?.user?.email;
     return article;
   }
 
@@ -127,10 +143,17 @@ export class ArticleRepository extends Repository<Article> {
       this.logger.warn(error);
       throw new InternalServerErrorException();
     }
-    delete article.user;
-    delete article.category.article;
-    delete article.category.forum;
-    delete article.category.question;
+    delete article?.category?.forum;
+    delete article?.category?.article;
+    delete article?.category?.question;
+    delete article?.user?.password;
+    delete article?.user?.publicRole;
+    delete article?.user?.questions;
+    delete article?.user?.answers;
+    delete article?.user?.articles;
+    delete article?.user?.salt;
+    delete article?.user?.forums;
+    delete article?.user?.email;
     return article;
   }
 

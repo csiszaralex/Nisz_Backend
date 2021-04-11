@@ -44,10 +44,17 @@ export class QuestionRepository extends Repository<Question> {
       this.logger.verbose(
         `Question ${question.title} has been successfully created by user ${question.user.name}`,
       );
-      delete question.category.article;
-      delete question.category.forum;
-      delete question.category.question;
-      delete question.user;
+      delete question?.user?.password;
+      delete question?.user?.publicRole;
+      delete question?.user?.questions;
+      delete question?.user?.answers;
+      delete question?.user?.articles;
+      delete question?.user?.salt;
+      delete question?.user?.forums;
+      delete question?.user?.email;
+      delete question?.category?.article;
+      delete question?.category?.forum;
+      delete question?.category?.question;
       return question;
     } catch (error) {
       this.logger.warn(error);
@@ -72,27 +79,17 @@ export class QuestionRepository extends Repository<Question> {
     return category;
   }
 
-  async getAllQuestions(): Promise<Question[]> {
-    const questions = await Question.find({
+  async getAllQuestions(): Promise<any[]> {
+    const questions: any[] = await Question.find({
       where: { deleted: false },
       relations: ['answers', 'category', 'user'],
     });
-    if (!questions) return [];
-    questions.map(question => {
-      delete question?.user?.password;
-      delete question?.user?.publicRole;
-      delete question?.user?.questions;
-      delete question?.user?.answers;
-      delete question?.user?.articles;
-      delete question?.user?.salt;
-      delete question?.user?.forums;
-      delete question?.user?.email;
-      delete question.category.article;
-      delete question.category.forum;
-      delete question.category.question;
-      return question;
-    });
-    return questions;
+    const ret = [];
+    for (const question of questions) {
+      ret.push(await this.getQuestionById(question.id));
+    }
+
+    return ret;
   }
 
   async getQuestionById(id: number): Promise<any> {
@@ -142,10 +139,17 @@ export class QuestionRepository extends Repository<Question> {
       this.logger.warn(error);
       throw new InternalServerErrorException();
     }
-    delete question.user;
-    delete question.category.article;
-    delete question.category.forum;
-    delete question.category.question;
+    delete question?.user?.password;
+    delete question?.user?.publicRole;
+    delete question?.user?.questions;
+    delete question?.user?.answers;
+    delete question?.user?.articles;
+    delete question?.user?.salt;
+    delete question?.user?.forums;
+    delete question?.user?.email;
+    delete question?.category?.article;
+    delete question?.category?.forum;
+    delete question?.category?.question;
     return question;
   }
 

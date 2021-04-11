@@ -57,6 +57,14 @@ export class ForumRepository extends Repository<Forum> {
       delete forum?.category?.question;
       delete forum?.category?.article;
       delete forum?.category?.forum;
+      delete forum?.user?.password;
+      delete forum?.user?.publicRole;
+      delete forum?.user?.questions;
+      delete forum?.user?.answers;
+      delete forum?.user?.articles;
+      delete forum?.user?.salt;
+      delete forum?.user?.forums;
+      delete forum?.user?.email;
       return forum;
     } catch (error) {
       this.logger.warn(error);
@@ -91,9 +99,17 @@ export class ForumRepository extends Repository<Forum> {
         delete forum.deleted;
         delete forum.parent;
         delete forum.user;
-        delete forum.category.question;
-        delete forum.category.article;
-        delete forum.category.forum;
+        delete forum?.category?.question;
+        delete forum?.category?.article;
+        delete forum?.category?.forum;
+        delete forum?.user?.password;
+        delete forum?.user?.publicRole;
+        delete forum?.user?.questions;
+        delete forum?.user?.answers;
+        delete forum?.user?.articles;
+        delete forum?.user?.salt;
+        delete forum?.user?.forums;
+        delete forum?.user?.email;
         return forum;
       });
     }
@@ -101,15 +117,23 @@ export class ForumRepository extends Repository<Forum> {
   }
 
   async getForumById(id: number): Promise<Forum> {
-    const forum = await Forum.findOne(id, { relations: ['category', 'children'] });
+    const forum = await Forum.findOne(id, { relations: ['category', 'children', 'user'] });
     if (forum) {
       if (forum.deleted) throw new GoneException('The requested forum post is deleted');
       delete forum.deleted;
       delete forum.parent;
       delete forum.user;
-      delete forum.category.question;
-      delete forum.category.article;
-      delete forum.category.forum;
+      delete forum?.category?.question;
+      delete forum?.category?.article;
+      delete forum?.category?.forum;
+      delete forum?.user?.password;
+      delete forum?.user?.publicRole;
+      delete forum?.user?.questions;
+      delete forum?.user?.answers;
+      delete forum?.user?.articles;
+      delete forum?.user?.salt;
+      delete forum?.user?.forums;
+      delete forum?.user?.email;
     }
     return forum;
   }
@@ -147,9 +171,17 @@ export class ForumRepository extends Repository<Forum> {
       delete forum.deleted;
       delete forum.parent;
       delete forum.user;
-      delete forum.category.question;
-      delete forum.category.article;
-      delete forum.category.forum;
+      delete forum?.category?.question;
+      delete forum?.category?.article;
+      delete forum?.category?.forum;
+      delete forum?.user?.password;
+      delete forum?.user?.publicRole;
+      delete forum?.user?.questions;
+      delete forum?.user?.answers;
+      delete forum?.user?.articles;
+      delete forum?.user?.salt;
+      delete forum?.user?.forums;
+      delete forum?.user?.email;
       return forum;
     } catch (error) {
       this.logger.warn(error);

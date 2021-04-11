@@ -21,8 +21,16 @@ export class AppService {
     const articles = await this.articleRepository.getAllArticles();
     const datas = [];
     questions.map(question => {
+      delete question.answers;
       datas.push({ ...question, type: 'question' });
     });
+    forums.map(forum => {
+      datas.push({ ...forum, type: 'forum' });
+    });
+    articles.map(article => {
+      datas.push({ ...article, type: 'article' });
+    });
+    datas.sort(data => -data.lastModified);
     return datas;
   }
 }

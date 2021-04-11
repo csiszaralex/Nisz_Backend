@@ -38,7 +38,7 @@ export class QuestionsController {
   }
 
   @Get()
-  getAllQuestions(): Promise<Question[]> {
+  getAllQuestions(): Promise<any[]> {
     return this.questionsService.getAllQuestions();
   }
 

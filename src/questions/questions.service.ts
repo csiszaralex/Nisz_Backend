@@ -17,13 +17,12 @@ export class QuestionsService {
     return this.questionRepository.createQuestion(id, title, content, category, status);
   }
 
-  getAllQuestions(): Promise<Question[]> {
+  getAllQuestions(): Promise<any[]> {
     return this.questionRepository.getAllQuestions();
   }
 
   async getQuestionById(id: number): Promise<Question> {
     const question = await this.questionRepository.getQuestionById(id);
-    delete question.user;
     return question;
   }
 
