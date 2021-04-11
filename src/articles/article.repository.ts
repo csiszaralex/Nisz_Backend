@@ -74,9 +74,9 @@ export class ArticleRepository extends Repository<Article> {
         relations: ['category'],
       });
     articles.map(article => {
-      delete article.category.forum;
-      delete article.category.article;
-      delete article.category.question;
+      delete article?.category?.forum;
+      delete article?.category?.article;
+      delete article?.category?.question;
       return article;
     });
     return articles;
