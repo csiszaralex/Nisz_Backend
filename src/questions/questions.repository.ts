@@ -37,7 +37,7 @@ export class QuestionRepository extends Repository<Question> {
     question.status = status;
     question.title = title;
     question.user = user;
-    question.category = await Category.findOne({ where: { name: category } });
+    question.category = await this.createCategory(category);
 
     try {
       await question.save();
