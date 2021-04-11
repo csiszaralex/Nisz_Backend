@@ -49,7 +49,7 @@ export class ForumRepository extends Repository<Forum> {
         parentObj.save();
       }
       this.logger.verbose(
-        `Fórum ${forum.title} has been successfully created by user ${forum.user}`,
+        `Fórum ${forum.title} has been successfully created by user ${forum.user.name}`,
       );
       delete forum.deleted;
       delete forum.parent;
@@ -77,7 +77,9 @@ export class ForumRepository extends Repository<Forum> {
         throw new InternalServerErrorException();
       }
     }
-
+    delete category.forum;
+    delete category.article;
+    delete category.question;
     return category;
   }
 
