@@ -11,6 +11,10 @@ export class CreateQuestionDto {
   content: string;
 
   @IsNotEmpty()
+  @ApiProperty({ example: 'Music' })
+  category: string;
+
+  @IsNotEmpty()
   @ApiProperty({ example: 'Ajánlott' })
-  categories: string[];
+  status: string;
 }

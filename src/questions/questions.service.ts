@@ -10,8 +10,8 @@ export class QuestionsService {
     @InjectRepository(QuestionRepository) private questionRepository: QuestionRepository,
   ) {}
   createQuestion(id: number, createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const { title, content, categories } = createQuestionDto;
-    return this.questionRepository.createQuestion(id, title, content, categories);
+    const { title, content, category, status } = createQuestionDto;
+    return this.questionRepository.createQuestion(id, title, content, category, status);
   }
 
   getAllQuestions(): Promise<Question[]> {
@@ -27,11 +27,15 @@ export class QuestionsService {
     id: number,
     createQuestionDto: CreateQuestionDto,
   ): Promise<Question> {
-    const { title, content, categories } = createQuestionDto;
-    return this.questionRepository.updateQuestionById(uid, id, title, content, status);
+    const { title, content, category, status } = createQuestionDto;
+    return this.questionRepository.updateQuestionById(uid, id, title, content, category, status);
   }
 
   removeQuestionById(uid: number, id: number): Promise<Question> {
     return this.questionRepository.removeQuestionById(uid, id);
+  }
+
+  changeStatus(id: number, newStatus: string) {
+    return this.questionRepository.changeStatus(id, newStatus);
   }
 }

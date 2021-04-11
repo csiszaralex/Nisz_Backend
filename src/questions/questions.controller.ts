@@ -66,4 +66,15 @@ export class QuestionsController {
   ): Promise<Question> {
     return this.questionsService.removeQuestionById(uid, id);
   }
+
+  @Patch(':id/status')
+  @Roles(Role.EDITOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeStatus(
+    @Body('status') newStatus: string,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.questionsService.changeStatus(id, newStatus);
+  }
 }

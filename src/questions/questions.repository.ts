@@ -11,7 +11,8 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
-    categories: string[],
+    category: string,
+    status: string,
   ): Promise<Question> {
     const question = new Question();
     question.acceptedAnswer = null;
@@ -24,17 +25,7 @@ export class QuestionRepository extends Repository<Question> {
     question.status = status;
     question.title = title;
     question.user = id;
-
-    categories.map(async category => {
-      let foundCategory = await Category.findOne({ where: { name: category } });
-      if (!foundCategory) {
-        foundCategory = new Category();
-        foundCategory.name = category;
-        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        await foundCategory.save();
-      }
-      // question.categorie.push(foundCategory);
-    });
+    question.category = await Category.findOne({ where: { name: category } });
 
     try {
       await question.save();
@@ -63,12 +54,14 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
+    category: string,
     status: string,
   ): Promise<Question> {
     const question = await Question.findOne({ where: { id: id } });
     question.title = title;
     question.content = content;
     question.status = status;
+    question.category = await Category.findOne({ where: { name: category } });
     question.lastModified = new Date();
     try {
       question.save();
@@ -92,5 +85,18 @@ export class QuestionRepository extends Repository<Question> {
       throw new InternalServerErrorException();
     }
     return question;
+  }
+
+  async changeStatus(id: number, newStatus: string) {
+    console.log(newStatus);
+    const question = await this.getQuestionById(id);
+    question.status = newStatus;
+    try {
+      question.save();
+      this.logger.verbose(`Status for id ${question.id} forum post changed to ${newStatus}`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
+    }
   }
 }

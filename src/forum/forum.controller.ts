@@ -53,12 +53,6 @@ export class ForumController {
   ): Promise<Forum> {
     return this.forumService.updateForumById(role, uid, id, createForumDto);
   }
-
-  // @Delete(':id')
-  // @UseGuards(AuthGuard())
-  // deleteFormById(@GetUserid() uid: number, @Param('id', ParseIntPipe) id: number): Promise<string> {
-  //   return this.forumService.deleteFormById(uid, id);
-  // }
   @Delete(':id')
   @UseGuards(AuthGuard())
   removeQuestionById(
@@ -75,5 +69,16 @@ export class ForumController {
   @UseGuards(AuthGuard())
   changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return this.forumService.changeLock(id);
+  }
+
+  @Patch(':id/status')
+  @Roles(Role.EDITOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeStatus(
+    @Body('status') newStatus: string,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.forumService.changeStatus(id, newStatus);
   }
 }

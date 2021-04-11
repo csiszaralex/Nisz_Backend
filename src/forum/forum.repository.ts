@@ -53,6 +53,7 @@ export class ForumRepository extends Repository<Forum> {
       );
       delete forum.deleted;
       delete forum.parent;
+      delete forum.user;
       delete forum.category.question;
       delete forum.category.article;
       delete forum.category.forum;
@@ -84,11 +85,12 @@ export class ForumRepository extends Repository<Forum> {
   }
 
   async getAllForums(): Promise<Forum[]> {
-    const forums = await Forum.find({ where: { deleted: false }, relations: ['category'] });
+    const forums = await Forum.find({ where: { deleted: false }, relations: ['category', 'user'] });
     if (forums) {
       forums.map(forum => {
         delete forum.deleted;
         delete forum.parent;
+        delete forum.user;
         delete forum.category.question;
         delete forum.category.article;
         delete forum.category.forum;
@@ -107,6 +109,7 @@ export class ForumRepository extends Repository<Forum> {
       if (forum.deleted) throw new GoneException('The requested forum post is deleted');
       delete forum.deleted;
       delete forum.parent;
+      delete forum.user;
       delete forum.category.question;
       delete forum.category.article;
       delete forum.category.forum;
@@ -212,5 +215,17 @@ export class ForumRepository extends Repository<Forum> {
       throw new InternalServerErrorException();
     }
     return '';
+  }
+
+  async changeStatus(id: number, newStatus: string): Promise<void> {
+    const forum = await this.getForumById(id);
+    forum.status = newStatus;
+    try {
+      await forum.save();
+      this.logger.verbose(`Status for id ${forum.id} forum post changed to ${newStatus}`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
+    }
   }
 }
