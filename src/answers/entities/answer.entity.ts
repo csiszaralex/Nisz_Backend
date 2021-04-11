@@ -13,7 +13,7 @@ export class Answer extends BaseEntity {
   content: string;
 
   @ManyToOne(() => User, user => user.answers, { eager: false })
-  user: number;
+  user: User;
 
   @ManyToOne(() => Question, question => question.answers, { eager: false })
   question: number;

@@ -6,6 +6,11 @@ import { ForumModule } from './forum/forum.module';
 import { ArticlesModule } from './articles/articles.module';
 import { QuestionsModule } from './questions/questions.module';
 import { CategorysModule } from './categorys/categorys.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ArticleRepository } from './articles/article.repository';
+import { ForumRepository } from './forum/forum.repository';
+import { QuestionRepository } from './questions/questions.repository';
 config();
 @Module({
   imports: [
@@ -25,5 +30,7 @@ config();
     ForumModule,
     CategorysModule,
   ],
+  controllers: [AppController],
+  providers: [AppService, ArticleRepository, ForumRepository, QuestionRepository],
 })
 export class AppModule {}

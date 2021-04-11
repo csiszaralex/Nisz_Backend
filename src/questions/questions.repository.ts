@@ -75,11 +75,18 @@ export class QuestionRepository extends Repository<Question> {
   async getAllQuestions(): Promise<Question[]> {
     const questions = await Question.find({
       where: { deleted: false },
-      relations: ['answers', 'category'],
+      relations: ['answers', 'category', 'user'],
     });
     if (!questions) return [];
     questions.map(question => {
-      delete question.user;
+      delete question?.user?.password;
+      delete question?.user?.publicRole;
+      delete question?.user?.questions;
+      delete question?.user?.answers;
+      delete question?.user?.articles;
+      delete question?.user?.salt;
+      delete question?.user?.forums;
+      delete question?.user?.email;
       delete question.category.article;
       delete question.category.forum;
       delete question.category.question;
@@ -88,15 +95,26 @@ export class QuestionRepository extends Repository<Question> {
     return questions;
   }
 
-  async getQuestionById(id: number): Promise<Question> {
+  async getQuestionById(id: number): Promise<any> {
     const question = await Question.findOne(id, { relations: ['user', 'answers'] });
     if (!question) throw new NotFoundException(`Question with id ${id} noth found`);
     if (question.deleted) throw new GoneException();
-    delete question.category.article;
-    delete question.category.forum;
-    delete question.category.question;
-    delete question.user;
-    return question;
+    let acceptedAnswer = null;
+    if (question.acceptedAnswer) {
+      acceptedAnswer = await Answer.findOne(question.acceptedAnswer);
+    }
+    delete question?.category?.article;
+    delete question?.category?.forum;
+    delete question?.category?.question;
+    delete question?.user?.password;
+    delete question?.user?.publicRole;
+    delete question?.user?.questions;
+    delete question?.user?.answers;
+    delete question?.user?.articles;
+    delete question?.user?.salt;
+    delete question?.user?.forums;
+    delete question?.user?.email;
+    return { ...question, acceptedAnswer };
   }
 
   async updateQuestionById(
@@ -177,7 +195,7 @@ export class QuestionRepository extends Repository<Question> {
   async addAnswer(id: number, uid: number, content: string): Promise<string> {
     const answer = new Answer();
     answer.content = content;
-    answer.user = uid;
+    answer.user = await User.findOne(uid);
     answer.question = id;
     try {
       answer.save();
@@ -192,7 +210,7 @@ export class QuestionRepository extends Repository<Question> {
   async removeAnswer(id: number, role: Role, uid: number, aId: number): Promise<string> {
     const answer = await Answer.findOne(aId);
     if (!answer) throw new NotFoundException(`Answer with id ${aId} not found`);
-    if (uid !== answer.user && role < Role.MODERATOR) throw new ForbiddenException();
+    if (uid !== answer.user.id && role < Role.MODERATOR) throw new ForbiddenException();
     try {
       answer.remove();
       this.logger.verbose(`Answer ${aId} deleted by ${uid}`);
@@ -210,7 +228,7 @@ export class QuestionRepository extends Repository<Question> {
   ): Promise<string> {
     const answer = await Answer.findOne(aId);
     if (!answer) throw new NotFoundException(`Answer with id ${aId} not found`);
-    if (uid !== answer.user && role < Role.MODERATOR) throw new ForbiddenException();
+    if (uid !== answer.user.id && role < Role.MODERATOR) throw new ForbiddenException();
     answer.content = content;
     try {
       answer.save();
@@ -221,11 +239,11 @@ export class QuestionRepository extends Repository<Question> {
     }
   }
   async setGood(id: number, role: Role, uid: number, aId: number): Promise<string> {
-    const answer = await Answer.findOne(aId);
+    const answer = await Answer.findOne(aId, { relations: ['user'] });
     const question = await Question.findOne(id);
     if (!answer) throw new NotFoundException(`Answer with id ${aId} not found`);
     if (!question) throw new NotFoundException(`Question with id ${id} not found`);
-    if (uid !== answer.user && role < Role.MODERATOR) throw new ForbiddenException();
+    if (uid !== answer.user.id && role < Role.MODERATOR) throw new ForbiddenException();
     if (question.acceptedAnswer) throw new BadRequestException();
     question.acceptedAnswer = answer.id;
     try {

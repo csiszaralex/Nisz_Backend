@@ -60,7 +60,7 @@ export class ArticleRepository extends Repository<Article> {
     return category;
   }
 
-  async getAllArticles(discover: boolean): Promise<Article[]> {
+  async getAllArticles(discover = false): Promise<Article[]> {
     let articles: Article[];
     if (discover)
       articles = await Article.find({
