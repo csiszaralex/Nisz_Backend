@@ -23,6 +23,7 @@ config();
     QuestionsModule,
     ArticlesModule,
     ForumModule,
+    CategorysModule,
   ],
 })
 export class AppModule {}

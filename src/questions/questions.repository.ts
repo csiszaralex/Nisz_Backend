@@ -22,8 +22,8 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
-    status: string,
     category: string,
+    status: string,
   ): Promise<Question> {
     const user = await User.findOne(id);
     const question = new Question();
@@ -36,19 +36,8 @@ export class QuestionRepository extends Repository<Question> {
     question.locked = false;
     question.status = status;
     question.title = title;
-    question.user = user;
-    question.category = await this.createCategory(category);
-
-    categories.map(async category => {
-      let foundCategory = await Category.findOne({ where: { name: category } });
-      if (!foundCategory) {
-        foundCategory = new Category();
-        foundCategory.name = category;
-        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        await foundCategory.save();
-      }
-      // question.categorie.push(foundCategory);
-    });
+    question.user = id;
+    question.category = await Category.findOne({ where: { name: category } });
 
     try {
       await question.save();
@@ -116,6 +105,7 @@ export class QuestionRepository extends Repository<Question> {
     id: number,
     title: string,
     content: string,
+    category: string,
     status: string,
     category: string,
   ): Promise<Question> {
@@ -125,6 +115,7 @@ export class QuestionRepository extends Repository<Question> {
     question.title = title;
     question.content = content;
     question.status = status;
+    question.category = await Category.findOne({ where: { name: category } });
     question.lastModified = new Date();
     question.category = await this.createCategory(category);
     try {
@@ -244,6 +235,19 @@ export class QuestionRepository extends Repository<Question> {
       return '';
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async changeStatus(id: number, newStatus: string) {
+    console.log(newStatus);
+    const question = await this.getQuestionById(id);
+    question.status = newStatus;
+    try {
+      question.save();
+      this.logger.verbose(`Status for id ${question.id} forum post changed to ${newStatus}`);
+    } catch (error) {
+      this.logger.warn(error);
+      throw new InternalServerErrorException();
     }
   }
 }

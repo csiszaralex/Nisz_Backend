@@ -119,4 +119,15 @@ export class QuestionsController {
   ): Promise<string> {
     return this.questionsService.setGood(id, role, uid, aId);
   }
+
+  @Patch(':id/status')
+  @Roles(Role.EDITOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeStatus(
+    @Body('status') newStatus: string,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.questionsService.changeStatus(id, newStatus);
+  }
 }

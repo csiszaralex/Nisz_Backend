@@ -13,8 +13,8 @@ export class QuestionsService {
   ) {}
 
   createQuestion(id: number, createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const { title, content, status, category } = createQuestionDto;
-    return this.questionRepository.createQuestion(id, title, content, status, category);
+    const { title, content, category, status } = createQuestionDto;
+    return this.questionRepository.createQuestion(id, title, content, category, status);
   }
 
   getAllQuestions(): Promise<Question[]> {
@@ -72,5 +72,9 @@ export class QuestionsService {
   }
   setGood(id: number, role: Role, uid: number, aId: number): Promise<string> {
     return this.questionRepository.setGood(id, role, uid, aId);
+  }
+
+  changeStatus(id: number, newStatus: string) {
+    return this.questionRepository.changeStatus(id, newStatus);
   }
 }
