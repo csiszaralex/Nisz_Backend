@@ -76,4 +76,12 @@ export class ForumController {
   changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return this.forumService.changeLock(id);
   }
+
+  @Put(':id/lock')
+  @Roles(Role.MODERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.forumService.changeLock(id);
+  }
 }

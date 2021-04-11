@@ -99,10 +99,7 @@ export class ForumRepository extends Repository<Forum> {
   }
 
   async getForumById(id: number): Promise<Forum> {
-    const forum = await Forum.findOne({
-      where: { id: id, deleted: false },
-      relations: ['category', 'children'],
-    });
+    const forum = await Forum.findOne(id, { relations: ['category', 'children'] });
     if (forum) {
       if (forum.deleted) throw new GoneException('The requested forum post is deleted');
       delete forum.deleted;
