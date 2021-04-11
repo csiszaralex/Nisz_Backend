@@ -20,6 +20,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/users/decorators/roles.decorator';
 import { Role } from 'src/users/enums/Roles.enum';
 import { RolesGuard } from 'src/users/guards/roles.guard';
+import { GetRole } from 'src/users/decorators/get-role.decorator';
 
 @ApiTags('Forums')
 @Controller('forums')
@@ -46,16 +47,34 @@ export class ForumController {
   @UseGuards(AuthGuard())
   updateForumById(
     @GetUserid() uid: number,
+    @GetRole() role: Role,
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) createForumDto: CreateForumDto,
   ): Promise<Forum> {
-    return this.forumService.updateForumById(uid, id, createForumDto);
+    return this.forumService.updateForumById(role, uid, id, createForumDto);
   }
 
+  // @Delete(':id')
+  // @UseGuards(AuthGuard())
+  // deleteFormById(@GetUserid() uid: number, @Param('id', ParseIntPipe) id: number): Promise<string> {
+  //   return this.forumService.deleteFormById(uid, id);
+  // }
   @Delete(':id')
   @UseGuards(AuthGuard())
-  deleteFormById(@GetUserid() uid: number, @Param('id', ParseIntPipe) id: number): Promise<string> {
-    return this.forumService.deleteFormById(uid, id);
+  removeQuestionById(
+    @GetUserid() uid: number,
+    @GetRole() role: Role,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<string> {
+    return this.forumService.deleteFormById(uid, role, id);
+  }
+
+  @Put(':id/lock')
+  @Roles(Role.MODERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.forumService.changeLock(id);
   }
 
   @Put(':id/lock')

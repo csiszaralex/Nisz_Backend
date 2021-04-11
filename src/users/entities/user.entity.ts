@@ -29,12 +29,6 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   publicRole: number;
 
-  @Column({ default: 0 })
-  companyRole: number;
-
-  @ManyToOne(() => Company, company => company.user, { eager: false })
-  company: number;
-
   @OneToMany(() => Question, question => question.user, { eager: true })
   questions: Question[];
 
