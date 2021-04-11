@@ -1,26 +1,50 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/users/enums/Roles.enum';
+import { ArticleRepository } from './article.repository';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { Article } from './entities/article.entity';
 
 @Injectable()
 export class ArticlesService {
-  create(createArticleDto: CreateArticleDto) {
-    return 'This action adds a new article';
+  constructor(@InjectRepository(ArticleRepository) private articleRepository: ArticleRepository) {}
+
+  createArticle(createArticleDto: CreateArticleDto, id: number) {
+    const { title, content, status, category } = createArticleDto;
+    return this.articleRepository.createArticle(title, content, status, category, id);
   }
 
-  findAll() {
-    return `This action returns all articles`;
+  getAllArticles(): Promise<Article[]> {
+    return this.articleRepository.getAllArticles();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  getArticleById(id: number) {
+    return this.articleRepository.getArticleById(id);
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  updateArticleById(
+    role: Role,
+    uid: number,
+    id: number,
+    createArticleDto: CreateArticleDto,
+  ): Promise<Article> {
+    const { title, content, status, category } = createArticleDto;
+    return this.articleRepository.updateArticleById(
+      role,
+      uid,
+      id,
+      title,
+      content,
+      status,
+      category,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
+  deleteArticleById(role: Role, uid: number, id: number) {
+    return this.articleRepository.deleteArticleById(role, uid, id);
+  }
+
+  changeLock(id: number): Promise<string> {
+    return this.articleRepository.changeLock(id);
   }
 }

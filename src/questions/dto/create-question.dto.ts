@@ -12,5 +12,9 @@ export class CreateQuestionDto {
 
   @IsNotEmpty()
   @ApiProperty({ example: 'Ajánlott' })
-  categories: string[];
+  status: string;
+
+  @IsNotEmpty()
+  @ApiProperty({ example: ['Music', 'Popular', 'Internet'] })
+  category: string;
 }

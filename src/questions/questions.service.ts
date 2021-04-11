@@ -11,9 +11,10 @@ export class QuestionsService {
   constructor(
     @InjectRepository(QuestionRepository) private questionRepository: QuestionRepository,
   ) {}
+
   createQuestion(id: number, createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const { title, content, categories } = createQuestionDto;
-    return this.questionRepository.createQuestion(id, title, content, categories);
+    const { title, content, status, category } = createQuestionDto;
+    return this.questionRepository.createQuestion(id, title, content, status, category);
   }
 
   getAllQuestions(): Promise<Question[]> {
@@ -32,8 +33,16 @@ export class QuestionsService {
     id: number,
     createQuestionDto: CreateQuestionDto,
   ): Promise<Question> {
-    const { title, content, status } = createQuestionDto;
-    return this.questionRepository.updateQuestionById(uid, role, id, title, content, status);
+    const { title, content, status, category } = createQuestionDto;
+    return this.questionRepository.updateQuestionById(
+      uid,
+      role,
+      id,
+      title,
+      content,
+      status,
+      category,
+    );
   }
 
   removeQuestionById(uid: number, role: Role, id: number): Promise<string> {
