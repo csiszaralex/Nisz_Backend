@@ -16,7 +16,7 @@ export class Article extends BaseEntity {
   @IsNotEmpty()
   preview: string;
 
-  @Column()
+  @Column({ default: '' })
   @IsNotEmpty()
   content: string;
 
