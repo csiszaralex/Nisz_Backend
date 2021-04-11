@@ -9,7 +9,6 @@ export class Forum extends BaseEntity {
   id: number;
 
   @Column()
-  @IsNotEmpty()
   title: string;
 
   @Column()
@@ -35,11 +34,10 @@ export class Forum extends BaseEntity {
   locked: boolean;
 
   @ManyToOne(() => User, user => user.forums, { eager: false })
-  user: number;
+  user: User;
 
   @ManyToOne(() => Forum, forum => forum.children, { eager: false })
   parent: Forum;
-
 
   @OneToMany(() => Forum, forum => forum.parent, { eager: false })
   children: Forum[];

@@ -28,4 +28,8 @@ export class ForumService {
   deleteFormById(uid: number, id: number): Promise<string> {
     return this.forumRepository.deleteFormById(uid, id);
   }
+
+  changeLock(id: number): Promise<string> {
+    return this.forumRepository.changeLock(id);
+  }
 }

@@ -27,9 +27,7 @@ export class UsersService {
     const payload: JwtPayloadInterface = {
       email: user.email,
       id: user.id,
-      companyRole: user.companyRole,
       publicRole: user.publicRole,
-      company: user.company,
       name: user.name,
     };
     const accessToken = await this.jwtService.sign(payload);

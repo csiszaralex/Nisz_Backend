@@ -39,6 +39,17 @@ export class QuestionRepository extends Repository<Question> {
     question.user = user;
     question.category = await this.createCategory(category);
 
+    categories.map(async category => {
+      let foundCategory = await Category.findOne({ where: { name: category } });
+      if (!foundCategory) {
+        foundCategory = new Category();
+        foundCategory.name = category;
+        foundCategory.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        await foundCategory.save();
+      }
+      // question.categorie.push(foundCategory);
+    });
+
     try {
       await question.save();
       this.logger.verbose(
