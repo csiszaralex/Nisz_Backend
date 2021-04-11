@@ -1,34 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  ValidationPipe,
+  ParseIntPipe,
+  Put,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
+import { GetRole } from 'src/users/decorators/get-role.decorator';
+import { GetUserid } from 'src/users/decorators/get-userid.decorator';
+import { Roles } from 'src/users/decorators/roles.decorator';
+import { Role } from 'src/users/enums/Roles.enum';
+import { RolesGuard } from 'src/users/guards/roles.guard';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { Article } from './entities/article.entity';
 
 @Controller('articles')
+@ApiTags('Articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articlesService.create(createArticleDto);
+  @UseGuards(AuthGuard())
+  createArticle(@Body(ValidationPipe) createArticleDto: CreateArticleDto, @GetUserid() id: number) {
+    return this.articlesService.createArticle(createArticleDto, id);
   }
 
   @Get()
-  findAll() {
-    return this.articlesService.findAll();
+  getAllArticles(): Promise<Article[]> {
+    return this.articlesService.getAllArticles();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articlesService.findOne(+id);
+  getArticleById(@Param('id', ParseIntPipe) id: number): Promise<Article> {
+    return this.articlesService.getArticleById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articlesService.update(+id, updateArticleDto);
+  @UseGuards(AuthGuard())
+  updateArticleById(
+    @GetRole() role: Role,
+    @GetUserid() uid: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createArticleDto: CreateArticleDto,
+  ): Promise<Article> {
+    return this.articlesService.updateArticleById(role, uid, id, createArticleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articlesService.remove(+id);
+  @UseGuards(AuthGuard())
+  deleteArticleById(
+    @GetRole() role: Role,
+    @GetUserid() uid: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.articlesService.deleteArticleById(role, uid, id);
+  }
+
+  @Put(':id/lock')
+  @Roles(Role.MODERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard())
+  changeLock(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.articlesService.changeLock(id);
   }
 }

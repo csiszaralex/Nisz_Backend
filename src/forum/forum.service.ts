@@ -38,6 +38,7 @@ export class ForumService {
   changeLock(id: number): Promise<string> {
     return this.forumRepository.changeLock(id);
   }
+  
   changeStatus(id: number, newStatus: string): Promise<void> {
     return this.forumRepository.changeStatus(id, newStatus);
   }
